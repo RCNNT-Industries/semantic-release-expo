@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 const readFile = jest.fn();
 const readJson = jest.fn();
 const writeJson = jest.fn();
@@ -38,27 +29,27 @@ describe('expo', () => {
         });
     });
     describe('#readManifest', () => {
-        it('reads the manifest file', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('reads the manifest file', async () => {
             readFile.mockResolvedValue('{ "expo": { "name": "test" } }');
-            const meta = yield readManifest(MANIFEST_FILE);
+            const meta = await readManifest(MANIFEST_FILE);
             expect(readFile).toBeCalledWith(MANIFEST_FILE, 'utf8');
             expect(meta.manifest).toMatchObject({ name: 'test' });
-        }));
+        });
     });
     describe('#readManifests', () => {
-        it('reads multiple manifest files', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('reads multiple manifest files', async () => {
             readFile
                 .mockResolvedValueOnce('{ "expo": { "name": "first" } }')
                 .mockResolvedValueOnce('{ "expo": { "name": "second" } }');
-            const metas = yield readManifests([MANIFEST_FILE, MANIFEST_FILE]);
+            const metas = await readManifests([MANIFEST_FILE, MANIFEST_FILE]);
             expect(readFile).toHaveBeenNthCalledWith(1, MANIFEST_FILE, 'utf8');
             expect(readFile).toHaveBeenNthCalledWith(2, MANIFEST_FILE, 'utf8');
             expect(metas[0].manifest).toMatchObject({ name: 'first' });
             expect(metas[1].manifest).toMatchObject({ name: 'second' });
-        }));
+        });
     });
     describe('#writeManifest', () => {
-        it('writes the manifest file with indentation detection', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('writes the manifest file with indentation detection', async () => {
             const manifestData = { name: 'test' };
             const manifestString = `{
 				"expo": {
@@ -72,12 +63,12 @@ describe('expo', () => {
             };
             detectIndent.mockReturnValue({ indent: '\t' });
             detectNewline.mockReturnValue('\n');
-            yield writeManifest(manifestMeta, manifestData);
+            await writeManifest(manifestMeta, manifestData);
             expect(detectIndent).toBeCalledWith(manifestString);
             expect(detectNewline).toBeCalledWith(manifestString);
             expect(writeJson).toBeCalledWith(MANIFEST_FILE, { expo: manifestData }, { spaces: '\t', EOL: '\n' });
-        }));
-        it('writes manifest file with fallback indentation', () => __awaiter(void 0, void 0, void 0, function* () {
+        });
+        it('writes manifest file with fallback indentation', async () => {
             const manifestData = { name: 'test' };
             const manifestString = `{
 				"expo": {
@@ -95,11 +86,11 @@ describe('expo', () => {
             };
             detectIndent.mockReturnValue(undefined);
             detectNewline.mockReturnValue(undefined);
-            yield writeManifest(manifestMeta, manifestData);
+            await writeManifest(manifestMeta, manifestData);
             expect(detectIndent).toBeCalledWith(manifestString);
             expect(detectNewline).toBeCalledWith(manifestString);
             expect(writeJson).toBeCalledWith(MANIFEST_FILE, { expo: manifestData }, options);
-        }));
+        });
     });
     describe('#getPlatforms', () => {
         it('returns default platforms', () => {

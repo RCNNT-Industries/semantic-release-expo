@@ -72,7 +72,7 @@ describe('version', () => {
             templateCompiler.mockReturnValue('4.6.0');
             expect(calculateVersion(sharedMeta, sharedConfig, sharedContext)).toMatch('4.6.0');
             expect(lodashTemplate).toBeCalledWith('${next.raw}');
-            expect(templateCompiler).toBeCalledWith(Object.assign(Object.assign({}, sharedVariables), { increment: 1 }));
+            expect(templateCompiler).toBeCalledWith({ ...sharedVariables, increment: 1 });
         });
         it('returns proper incremental versions', () => {
             const templateCompiler = jest.fn();
@@ -86,7 +86,12 @@ describe('version', () => {
             templateCompiler.mockReturnValue('9');
             expect(calculateVersion(meta, sharedConfig, sharedContext)).toMatch('9');
             expect(lodashTemplate).toBeCalledWith('${increment}');
-            expect(templateCompiler).toBeCalledWith(Object.assign(Object.assign({}, sharedVariables), { code: 280040600, expo: coerce('28.0.0'), increment: 9 }));
+            expect(templateCompiler).toBeCalledWith({
+                ...sharedVariables,
+                code: 280040600,
+                expo: coerce('28.0.0'),
+                increment: 9,
+            });
         });
     });
     describe('#calculateAndroidVersion', () => {
@@ -98,7 +103,11 @@ describe('version', () => {
             templateCompiler.mockReturnValue('290040600');
             expect(calculateAndroidVersion(sharedMeta, sharedConfig, sharedContext)).toMatch('290040600');
             expect(lodashTemplate).toBeCalledWith('${code}');
-            expect(templateCompiler).toBeCalledWith(Object.assign(Object.assign({}, sharedVariables), { increment: 290040502, recommended: sharedVariables.code }));
+            expect(templateCompiler).toBeCalledWith({
+                ...sharedVariables,
+                increment: 290040502,
+                recommended: sharedVariables.code,
+            });
         });
     });
     describe('#calculateIosVersion', () => {
@@ -110,7 +119,7 @@ describe('version', () => {
             templateCompiler.mockReturnValue('4.6.0');
             expect(calculateIosVersion(sharedMeta, sharedConfig, sharedContext)).toMatch('4.6.0');
             expect(lodashTemplate).toBeCalledWith('${recommended}');
-            expect(templateCompiler).toBeCalledWith(Object.assign(Object.assign({}, sharedVariables), { increment: 1 }));
+            expect(templateCompiler).toBeCalledWith({ ...sharedVariables, increment: 1 });
         });
         it('returns proper incremental versions', () => {
             const templateCompiler = jest.fn();
@@ -125,7 +134,12 @@ describe('version', () => {
             templateCompiler.mockReturnValue('9');
             expect(calculateIosVersion(meta, sharedConfig, sharedContext)).toMatch('9');
             expect(lodashTemplate).toBeCalledWith('${increment}');
-            expect(templateCompiler).toBeCalledWith(Object.assign(Object.assign({}, sharedVariables), { code: 280040600, expo: coerce('28.0.0'), increment: 9 }));
+            expect(templateCompiler).toBeCalledWith({
+                ...sharedVariables,
+                code: 280040600,
+                expo: coerce('28.0.0'),
+                increment: 9,
+            });
         });
     });
 });

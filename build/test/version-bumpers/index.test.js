@@ -44,7 +44,13 @@ describe('version-bumpers', () => {
             version: '2.3.0',
         });
         // reuse the old manifest meta, stringified contents should match the exact file content (not updated one).
-        const createPatchedManifestMeta = (meta, manifest) => (Object.assign(Object.assign({}, meta), { manifest: Object.assign(Object.assign({}, meta.manifest), manifest) }));
+        const createPatchedManifestMeta = (meta, manifest) => ({
+            ...meta,
+            manifest: {
+                ...meta.manifest,
+                ...manifest,
+            },
+        });
         const newVersionMeta = createPatchedManifestMeta(oldMeta, { version: '2.4.0' });
         const newAndroidMeta = createPatchedManifestMeta(newVersionMeta, { android: { versionCode: 13 } });
         const newIosMeta = createPatchedManifestMeta(newAndroidMeta, { ios: { buildNumber: '2.4.0' } });

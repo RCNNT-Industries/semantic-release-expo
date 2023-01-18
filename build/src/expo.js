@@ -1,23 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 import detectIndent from 'detect-indent';
 import { readFile, writeJson } from 'fs-extra';
 /**
@@ -43,47 +23,41 @@ export function logManifestFromError(context, error) {
 /**
  * Read the Expo manifest content and return the parsed JSON.
  */
-export function readManifest(filename) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const content = yield readFile(filename, 'utf8');
-            const manifest = JSON.parse(content).expo;
-            return { filename, content, manifest };
-        }
-        catch (error) {
-            error.expo = filename;
-            throw error;
-        }
-    });
+export async function readManifest(filename) {
+    try {
+        const content = await readFile(filename, 'utf8');
+        const manifest = JSON.parse(content).expo;
+        return { filename, content, manifest };
+    }
+    catch (error) {
+        error.expo = filename;
+        throw error;
+    }
 }
 /**
  * Read a list of Expo mannifest files and return the parsed JSON.
  */
-export function readManifests(filenames) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield Promise.all(filenames.map(readManifest));
-    });
+export async function readManifests(filenames) {
+    return await Promise.all(filenames.map(readManifest));
 }
 /**
  * Write new content to the Expo manifest file, keeping indentation intact.
  */
-export function writeManifest(meta, manifest) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let content = { expo: manifest };
-        try {
-            const original = yield readFile(meta.filename, 'utf8');
-            const manifest = JSON.parse(original);
-            const { expo } = manifest, rest = __rest(manifest, ["expo"]);
-            content = Object.assign(Object.assign({}, content), rest);
-        }
-        catch (error) {
-            error.expo = meta.filename;
-            throw error;
-        }
-        const { indent } = detectIndent(meta.content) || { indent: DEFAULT_INDENT };
-        const newline = DEFAULT_NEWLINE;
-        yield writeJson(meta.filename, content, { spaces: indent, EOL: newline });
-    });
+export async function writeManifest(meta, manifest) {
+    let content = { expo: manifest };
+    try {
+        const original = await readFile(meta.filename, 'utf8');
+        const manifest = JSON.parse(original);
+        const { expo, ...rest } = manifest;
+        content = { ...content, ...rest };
+    }
+    catch (error) {
+        error.expo = meta.filename;
+        throw error;
+    }
+    const { indent } = detectIndent(meta.content) || { indent: DEFAULT_INDENT };
+    const newline = DEFAULT_NEWLINE;
+    await writeJson(meta.filename, content, { spaces: indent, EOL: newline });
 }
 /**
  * Get the platforms from a loaded manifest.

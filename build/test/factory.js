@@ -67,6 +67,11 @@ export function createManifestMeta(manifest) {
  * Create a (full) context object with logger, options and last/next releases.
  */
 export function createContext(options = {}) {
-    return Object.assign(Object.assign(Object.assign(Object.assign({}, createContextLogger()), createContextOptions()), createContextNextRelease(options.next)), createContextLastRelease(options.last));
+    return {
+        ...createContextLogger(),
+        ...createContextOptions(),
+        ...createContextNextRelease(options.next),
+        ...createContextLastRelease(options.last),
+    };
 }
 //# sourceMappingURL=factory.js.map

@@ -1,18 +1,9 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 const readManifests = jest.fn();
 jest.doMock('../../src/expo', () => ({ readManifests, MANIFEST_FILE: 'app.json' }));
 import verifyConditions from '../../src/scripts/verify-conditions';
 import { createContext } from '../factory';
 describe('scripts/verify-conditions', () => {
-    it('reads manifest and logs name', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('reads manifest and logs name', async () => {
         const context = createContext();
         const config = {
             manifests: [
@@ -31,18 +22,18 @@ describe('scripts/verify-conditions', () => {
             manifest: { name: 'test-staging' },
         };
         readManifests.mockResolvedValue([firstMeta, secondMeta]);
-        yield verifyConditions(config, context);
+        await verifyConditions(config, context);
         expect(readManifests).toBeCalled();
         expect(context.logger.log).toHaveBeenNthCalledWith(1, 'Found %s manifest for %s in %s', 'Expo', 'test', 'app.json');
         expect(context.logger.log).toHaveBeenNthCalledWith(2, 'Found %s manifest for %s in %s', 'Expo', 'test-staging', 'app.staging.json');
-    }));
-    it('throws when read manifest failed', () => __awaiter(void 0, void 0, void 0, function* () {
+    });
+    it('throws when read manifest failed', async () => {
         const config = {};
         const context = createContext();
         readManifests.mockRejectedValue(new Error());
         expect(verifyConditions(config, context)).rejects.toThrowError();
-    }));
-    it('inherits prepare configration without verify conditions configuration', () => __awaiter(void 0, void 0, void 0, function* () {
+    });
+    it('inherits prepare configration without verify conditions configuration', async () => {
         const config = {};
         const manifests = ['app.production.json', 'app.staging.json'];
         const context = createContext();
@@ -62,10 +53,10 @@ describe('scripts/verify-conditions', () => {
             manifest: { name: 'test-staging' },
         };
         readManifests.mockResolvedValue([firstMeta, secondMeta]);
-        yield verifyConditions(config, context);
+        await verifyConditions(config, context);
         expect(readManifests).toBeCalled();
         expect(context.logger.log).toHaveBeenNthCalledWith(1, 'Found %s manifest for %s in %s', 'Expo', 'test', 'app.production.json');
         expect(context.logger.log).toHaveBeenNthCalledWith(2, 'Found %s manifest for %s in %s', 'Expo', 'test-staging', 'app.staging.json');
-    }));
+    });
 });
 //# sourceMappingURL=verify-conditions.test.js.map

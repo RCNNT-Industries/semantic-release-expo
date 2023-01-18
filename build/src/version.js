@@ -29,7 +29,10 @@ export const getDefaultVariables = (meta, context) => {
  */
 export const calculateVersion = (meta, config, context) => {
     const { version } = getVersionTemplates(config);
-    return _template(version)(Object.assign(Object.assign({}, getDefaultVariables(meta, context)), { increment: (Number(meta.manifest.version) || 0) + 1 }));
+    return _template(version)({
+        ...getDefaultVariables(meta, context),
+        increment: (Number(meta.manifest.version) || 0) + 1,
+    });
 };
 /**
  * Calculate the (next) version for the android platform.
@@ -40,7 +43,11 @@ export const calculateAndroidVersion = (meta, config, context) => {
     const { android } = getVersionTemplates(config);
     const androidConfig = getAndroidPlatform(meta.manifest);
     const variables = getDefaultVariables(meta, context);
-    return _template(android)(Object.assign(Object.assign({}, variables), { increment: (Number(androidConfig.versionCode) || 0) + 1, recommended: variables.code }));
+    return _template(android)({
+        ...variables,
+        increment: (Number(androidConfig.versionCode) || 0) + 1,
+        recommended: variables.code,
+    });
 };
 /**
  * Calculate the (next) version for the ios platform.
@@ -50,6 +57,9 @@ export const calculateAndroidVersion = (meta, config, context) => {
 export const calculateIosVersion = (meta, config, context) => {
     const { ios } = getVersionTemplates(config);
     const iosConfig = getIosPlatform(meta.manifest);
-    return _template(ios)(Object.assign(Object.assign({}, getDefaultVariables(meta, context)), { increment: (Number(iosConfig.buildNumber) || 0) + 1 }));
+    return _template(ios)({
+        ...getDefaultVariables(meta, context),
+        increment: (Number(iosConfig.buildNumber) || 0) + 1,
+    });
 };
 //# sourceMappingURL=version.js.map

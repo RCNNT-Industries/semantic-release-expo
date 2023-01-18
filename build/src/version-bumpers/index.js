@@ -10,10 +10,10 @@ const bumpVersions = (meta, config, context) => {
     const platforms = getPlatforms(meta.manifest);
     let newManifest = bumpVersion(meta, config, context);
     if (platforms.indexOf('android') >= 0) {
-        newManifest = bumpAndroid(Object.assign(Object.assign({}, meta), { manifest: newManifest }), config, context);
+        newManifest = bumpAndroid({ ...meta, manifest: newManifest }, config, context);
     }
     if (platforms.indexOf('ios') >= 0) {
-        newManifest = bumpIos(Object.assign(Object.assign({}, meta), { manifest: newManifest }), config, context);
+        newManifest = bumpIos({ ...meta, manifest: newManifest }, config, context);
     }
     return newManifest;
 };

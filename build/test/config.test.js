@@ -38,7 +38,13 @@ describe('config', () => {
             expect(getVersionTemplates({ versions })).toMatchObject(versions);
         });
     });
-    const createContextWithPrepare = (prepare) => (Object.assign(Object.assign({}, createContextLogger()), { options: Object.assign(Object.assign({}, createContextOptions().options), { prepare }) }));
+    const createContextWithPrepare = (prepare) => ({
+        ...createContextLogger(),
+        options: {
+            ...createContextOptions().options,
+            prepare,
+        },
+    });
     describe('#getPrepareConfig', () => {
         it('returns nothing when prepare configuration is not defined', () => {
             const contextWithoutPrepare = createContextWithPrepare(undefined);

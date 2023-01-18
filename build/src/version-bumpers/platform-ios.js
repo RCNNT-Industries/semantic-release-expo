@@ -4,7 +4,7 @@ const bumpPlatformIos = (meta, config, context) => {
     const ios = getIosPlatform(meta.manifest);
     const newVersion = calculateIosVersion(meta, config, context);
     context.logger.log('%s manifest ios version changed (%s => %s) in %s', 'Expo', ios.buildNumber, newVersion, meta.filename);
-    return Object.assign(Object.assign({}, meta.manifest), { ios: Object.assign(Object.assign({}, ios), { buildNumber: newVersion }) });
+    return { ...meta.manifest, ios: { ...ios, buildNumber: newVersion } };
 };
 export default bumpPlatformIos;
 //# sourceMappingURL=platform-ios.js.map
