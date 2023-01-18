@@ -1,18 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createContext = exports.createManifestMeta = exports.createContextLastRelease = exports.createContextNextRelease = exports.createContextOptions = exports.createContextLogger = exports.createConfig = void 0;
 /**
  * Create an empty object representing the config.
  * This is mostly for future configuration and not-having-to-rewrite the tests.
  */
-function createConfig() {
+export function createConfig() {
     return {};
 }
-exports.createConfig = createConfig;
 /**
  * Create a context partial with a mocked logger.
  */
-function createContextLogger() {
+export function createContextLogger() {
     return {
         logger: {
             error: jest.fn(),
@@ -20,11 +16,10 @@ function createContextLogger() {
         },
     };
 }
-exports.createContextLogger = createContextLogger;
 /**
  * Create a context partial with some general repository options.
  */
-function createContextOptions() {
+export function createContextOptions() {
     return {
         options: {
             branch: 'master',
@@ -33,11 +28,10 @@ function createContextOptions() {
         },
     };
 }
-exports.createContextOptions = createContextOptions;
 /**
  * Create a context partial which defines the next release.
  */
-function createContextNextRelease(options) {
+export function createContextNextRelease(options) {
     return {
         nextRelease: {
             gitHead: options ? options.gitHead : 'abc234',
@@ -47,11 +41,10 @@ function createContextNextRelease(options) {
         },
     };
 }
-exports.createContextNextRelease = createContextNextRelease;
 /**
  * Create a context partial which defines the last release.
  */
-function createContextLastRelease(options) {
+export function createContextLastRelease(options) {
     return {
         lastRelease: {
             gitHead: options ? options.gitHead : 'abc123',
@@ -60,23 +53,20 @@ function createContextLastRelease(options) {
         },
     };
 }
-exports.createContextLastRelease = createContextLastRelease;
 /**
  * Create a manifest meta object containing the manifest data.
  */
-function createManifestMeta(manifest) {
+export function createManifestMeta(manifest) {
     return {
         content: JSON.stringify(manifest),
         filename: 'app.json',
         manifest,
     };
 }
-exports.createManifestMeta = createManifestMeta;
 /**
  * Create a (full) context object with logger, options and last/next releases.
  */
-function createContext(options = {}) {
+export function createContext(options = {}) {
     return Object.assign(Object.assign(Object.assign(Object.assign({}, createContextLogger()), createContextOptions()), createContextNextRelease(options.next)), createContextLastRelease(options.last));
 }
-exports.createContext = createContext;
 //# sourceMappingURL=factory.js.map

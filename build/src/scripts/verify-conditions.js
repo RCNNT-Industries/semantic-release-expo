@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,25 +7,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = require("../config");
-const expo_1 = require("../expo");
+import { getManifestFiles, inheritPrepareConfig } from '../config';
+import { logManifestFromError, readManifests } from '../expo';
 const SemanticReleaseError = require('@semantic-release/error');
 /**
  * Verify the configuration of this plugin.
  * This checks if all Expo manifests are readable.
  */
 const verifyConditions = (config, context) => __awaiter(void 0, void 0, void 0, function* () {
-    const verifyConfig = (0, config_1.inheritPrepareConfig)(config, context);
+    const verifyConfig = inheritPrepareConfig(config, context);
     try {
-        (yield (0, expo_1.readManifests)((0, config_1.getManifestFiles)(verifyConfig))).forEach((meta) => {
+        (yield readManifests(getManifestFiles(verifyConfig))).forEach((meta) => {
             context.logger.log('Found %s manifest for %s in %s', 'Expo', meta.manifest.name, meta.filename);
         });
     }
     catch (error) {
-        (0, expo_1.logManifestFromError)(context, error);
+        logManifestFromError(context, error);
         throw new SemanticReleaseError('Could not load Expo manifest(s).', 'EINVALIDEXPOMANIFEST', error.message);
     }
 });
-exports.default = verifyConditions;
+export default verifyConditions;
 //# sourceMappingURL=verify-conditions.js.map

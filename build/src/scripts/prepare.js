@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,13 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = require("../config");
-const expo_1 = require("../expo");
-const version_bumpers_1 = __importDefault(require("../version-bumpers"));
+import { getManifestFiles } from '../config';
+import { logManifestFromError, readManifests, writeManifest } from '../expo';
+import bumpVersions from '../version-bumpers';
 const SemanticReleaseError = require('@semantic-release/error');
 /**
  * Prepare the new release by updating all manifests.
@@ -22,18 +17,18 @@ const SemanticReleaseError = require('@semantic-release/error');
  * It should also update the version code and build number when available.
  */
 const prepare = (config, context) => __awaiter(void 0, void 0, void 0, function* () {
-    const files = yield (0, expo_1.readManifests)((0, config_1.getManifestFiles)(config));
-    const writes = files.map((meta) => ((0, expo_1.writeManifest)(meta, (0, version_bumpers_1.default)(meta, config, context)).then(() => {
+    const files = yield readManifests(getManifestFiles(config));
+    const writes = files.map((meta) => (writeManifest(meta, bumpVersions(meta, config, context)).then(() => {
         context.logger.log('New %s manifest written for %s to %s', 'Expo', meta.manifest.name, meta.filename);
     })));
     try {
         yield Promise.all(writes);
     }
     catch (error) {
-        (0, expo_1.logManifestFromError)(context, error);
+        logManifestFromError(context, error);
         throw new SemanticReleaseError('Could not write Expo manifest(s)', 'EWRITEEXPOMANIFEST', error.message);
     }
     context.logger.log('Updated all %s manifests!', writes.length);
 });
-exports.default = prepare;
+export default prepare;
 //# sourceMappingURL=prepare.js.map

@@ -1,8 +1,3 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 const getPlatforms = jest.fn();
 const bumpPlatformAndroid = jest.fn();
 const bumpPlatformIos = jest.fn();
@@ -11,12 +6,12 @@ jest.doMock('../../src/expo', () => ({ getPlatforms }));
 jest.doMock('../../src/version-bumpers/platform-android', () => bumpPlatformAndroid);
 jest.doMock('../../src/version-bumpers/platform-ios', () => bumpPlatformIos);
 jest.doMock('../../src/version-bumpers/version', () => bumpVersion);
-const version_bumpers_1 = __importDefault(require("../../src/version-bumpers"));
-const factory_1 = require("../factory");
+import bumpAllVersion from '../../src/version-bumpers';
+import { createConfig, createContext, createManifestMeta } from '../factory';
 describe('version-bumpers', () => {
     it('returns new manifest with bumped version', () => {
-        const config = (0, factory_1.createConfig)();
-        const context = (0, factory_1.createContext)({
+        const config = createConfig();
+        const context = createContext({
             next: {
                 gitHead: 'abc12',
                 gitTag: 'v9.1.0',
@@ -24,17 +19,17 @@ describe('version-bumpers', () => {
                 version: '9.1.0',
             },
         });
-        const oldMeta = (0, factory_1.createManifestMeta)({ name: 'test', version: '9.0.0' });
-        const newMeta = (0, factory_1.createManifestMeta)({ name: 'test', version: '9.1.9' });
+        const oldMeta = createManifestMeta({ name: 'test', version: '9.0.0' });
+        const newMeta = createManifestMeta({ name: 'test', version: '9.1.9' });
         getPlatforms.mockReturnValue([]);
         bumpVersion.mockReturnValue(newMeta.manifest);
-        const received = (0, version_bumpers_1.default)(oldMeta, config, context);
+        const received = bumpAllVersion(oldMeta, config, context);
         expect(received).toBe(newMeta.manifest);
         expect(bumpVersion).toBeCalledWith(oldMeta, config, context);
     });
     it('returns new manifest with bumped version and platform versions', () => {
-        const config = (0, factory_1.createConfig)();
-        const context = (0, factory_1.createContext)({
+        const config = createConfig();
+        const context = createContext({
             next: {
                 gitHead: 'abc12',
                 gitTag: 'v2.4.0',
@@ -42,7 +37,7 @@ describe('version-bumpers', () => {
                 version: '2.4.0',
             },
         });
-        const oldMeta = (0, factory_1.createManifestMeta)({
+        const oldMeta = createManifestMeta({
             android: { versionCode: 12 },
             ios: { buildNumber: '2.3.0' },
             name: 'test',
@@ -57,7 +52,7 @@ describe('version-bumpers', () => {
         bumpVersion.mockReturnValue(newVersionMeta.manifest);
         bumpPlatformAndroid.mockReturnValue(newAndroidMeta.manifest);
         bumpPlatformIos.mockReturnValue(newIosMeta.manifest);
-        const received = (0, version_bumpers_1.default)(oldMeta, config, context);
+        const received = bumpAllVersion(oldMeta, config, context);
         expect(received).toBe(newIosMeta.manifest);
         expect(bumpVersion).toBeCalledWith(oldMeta, config, context);
         expect(bumpPlatformAndroid).toBeCalledWith(newVersionMeta, config, context);

@@ -1,19 +1,14 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 const getIosPlatform = jest.fn();
 const calculateIosVersion = jest.fn();
 jest.doMock('../../src/expo', () => ({ getIosPlatform }));
 jest.doMock('../../src/version', () => ({ calculateIosVersion }));
-const platform_ios_1 = __importDefault(require("../../src/version-bumpers/platform-ios"));
-const factory_1 = require("../factory");
+import bumpPlatformIos from '../../src/version-bumpers/platform-ios';
+import { createConfig, createContext, createManifestMeta } from '../factory';
 describe('version-bumpers/platform-ios', () => {
     it('returns new manifest with bumped ios version', () => {
-        const config = (0, factory_1.createConfig)();
-        const context = (0, factory_1.createContext)();
-        const meta = (0, factory_1.createManifestMeta)({
+        const config = createConfig();
+        const context = createContext();
+        const meta = createManifestMeta({
             android: { versionCode: 6 },
             ios: { buildNumber: context.lastRelease.version },
             name: 'test',
@@ -21,7 +16,7 @@ describe('version-bumpers/platform-ios', () => {
         });
         getIosPlatform.mockReturnValue(meta.manifest.ios);
         calculateIosVersion.mockReturnValue('newversion');
-        const manifest = (0, platform_ios_1.default)(meta, config, context);
+        const manifest = bumpPlatformIos(meta, config, context);
         expect(getIosPlatform).toBeCalledWith(meta.manifest);
         expect(calculateIosVersion).toBeCalledWith(meta, config, context);
         expect(context.logger.log).toBeCalledWith('%s manifest ios version changed (%s => %s) in %s', 'Expo', meta.manifest.ios.buildNumber, 'newversion', meta.filename);

@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const expo_1 = require("../expo");
-const version_1 = require("../version");
+import { getAndroidPlatform } from '../expo';
+import { calculateAndroidVersion } from '../version';
 const bumpPlatformAndroid = (meta, config, context) => {
-    const android = (0, expo_1.getAndroidPlatform)(meta.manifest);
-    const newVersion = parseInt((0, version_1.calculateAndroidVersion)(meta, config, context), 10);
+    const android = getAndroidPlatform(meta.manifest);
+    const newVersion = parseInt(calculateAndroidVersion(meta, config, context), 10);
     context.logger.log('%s manifest android version changed (%s => %s) in %s', 'Expo', android.versionCode, newVersion, meta.filename);
     return Object.assign(Object.assign({}, meta.manifest), { android: Object.assign(Object.assign({}, android), { versionCode: newVersion }) });
 };
-exports.default = bumpPlatformAndroid;
+export default bumpPlatformAndroid;
 //# sourceMappingURL=platform-android.js.map
