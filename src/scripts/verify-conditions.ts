@@ -22,7 +22,7 @@ const verifyConditions: SemanticMethod = async (config, context) => {
 				);
 			},
 		);
-	} catch (error) {
+	} catch (error:any) {
 		logManifestFromError(context, error);
 
 		throw new SemanticReleaseError(

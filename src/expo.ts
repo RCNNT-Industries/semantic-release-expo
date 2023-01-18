@@ -60,7 +60,7 @@ export async function readManifest(filename: string): Promise<ManifestMeta> {
 		const manifest = JSON.parse(content).expo;
 
 		return { filename, content, manifest };
-	} catch (error) {
+	} catch (error:any) {
 		error.expo = filename;
 		throw error;
 	}
@@ -85,13 +85,13 @@ export async function writeManifest(meta: ManifestMeta, manifest: Manifest) {
 
 		const {expo, ...rest} = manifest;
 		content = {...content, ...rest}
-	} catch (error) {
+	} catch (error:any) {
 		error.expo = meta.filename;
 		throw error;
 	}
 
 	const { indent } = detectIndent(meta.content) || { indent: DEFAULT_INDENT };
-	const newline = detectNewline(meta.content) || DEFAULT_NEWLINE;
+	const newline = DEFAULT_NEWLINE;
 
 	await writeJson(meta.filename, content, { spaces: indent, EOL: newline });
 }

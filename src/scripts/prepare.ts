@@ -25,13 +25,13 @@ const prepare: SemanticMethod = async (config, context) => {
 
 	try {
 		await Promise.all(writes);
-	} catch (error) {
+	} catch (error:any) {
 		logManifestFromError(context, error);
 
 		throw new SemanticReleaseError(
 			'Could not write Expo manifest(s)',
 			'EWRITEEXPOMANIFEST',
-			error.message,
+			error.message
 		);
 	}
 
