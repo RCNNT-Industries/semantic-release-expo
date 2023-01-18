@@ -2,6 +2,7 @@
 	"name": "semantic-release-expo",
 	"version": "2.2.3",
 	"description": "An Expo implementation for semantic release, so you don't have to bother",
+	"type": "module",
 	"keywords": [
 		"expo",
 		"react",
