@@ -77,10 +77,23 @@ export async function readManifests(filenames: string[]): Promise<ManifestMeta[]
  * Write new content to the Expo manifest file, keeping indentation intact.
  */
 export async function writeManifest(meta: ManifestMeta, manifest: Manifest) {
+	let content = {expo: manifest}
+
+	try {
+		const original = await readFile(meta.filename, 'utf8');
+		const manifest = JSON.parse(original);
+
+		const {expo, ...rest} = manifest;
+		content = {...content, ...rest}
+	} catch (error) {
+		error.expo = meta.filename;
+		throw error;
+	}
+
 	const { indent } = detectIndent(meta.content) || { indent: DEFAULT_INDENT };
 	const newline = detectNewline(meta.content) || DEFAULT_NEWLINE;
 
-	await writeJson(meta.filename, { expo: manifest }, { spaces: indent, EOL: newline });
+	await writeJson(meta.filename, content, { spaces: indent, EOL: newline });
 }
 
 /**
